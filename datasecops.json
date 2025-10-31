@@ -1,0 +1,139 @@
+{
+  "categories": [
+    {
+      "name": "Governance and Policy",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Policy: Security is seen as an IT-only responsibility. There are no formal, documented policies or standards for data security.",
+            "Roles & Responsibilities: There is no designated \"Data Security Owner.\" Data professionals are generally unaware of their security responsibilities.",
+            "Compliance: Compliance with regulations (e.g., GDPR, HIPAA) is not systematically addressed."
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Policy: Basic data security policies are drafted but may not be widely communicated or enforced. They often focus on high-level statements rather than specific technical controls.",
+            "Roles & Responsibilities: Basic security roles are defined (e.g., data owners are identified), but accountability is not consistently enforced. Some data professionals are given basic security training.",
+            "Compliance: An initial gap analysis against key regulations (e.g., GDPR, HIPAA) is performed, but remediation efforts are still project-based and reactive."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Data Security Practices",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Data Classification: Data is not formally classified. Data engineers may have a vague idea of sensitive data but rely on tribal knowledge.",
+            "Access Control: Access to data is managed on an as-needed basis. Users are often granted broad permissions (e.g., `READ-ALL`) to simplify their work.",
+            "Data Protection: Encryption is handled by the platform by default, but there is no custom configuration.",
+            "Data Masking/Anonymization: No systematic data masking is in place. Data is used in its raw form in development or test environments.",
+            "Network Security: Data platforms are accessed directly over the public internet. There's no use of private endpoints or firewalls to restrict network access."
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Data Classification: Some data is manually classified, often just into two or three categories (e.g., public, confidential, PII). This process is inconsistent and relies on manual effort.",
+            "Access Control: A policy of least privilege is discussed but not yet fully implemented. Access to production data is restricted to a small group, but development environments still use overly permissive roles.",
+            "Data Protection: Data is encrypted at rest and in transit using the platform's default capabilities. Some key concepts around customer-managed keys (CMK) are being explored but not implemented.",
+            "Data Masking/Anonymization: Basic, ad-hoc data masking is performed for some sensitive fields in non-production environments, but there is no consistent, automated process.",
+            "Network Security: Network access is limited to a whitelist of IP addresses. Basic network policies are in place to control access to specific platforms."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Monitoring and Incident Response",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Logging & Auditing: Logging is enabled by default, but logs are not regularly reviewed or analyzed for suspicious activity. They are only used after an incident occurs.",
+            "Incident Response: There is no formal data security incident response plan. In the event of a breach, response is ad-hoc and chaotic."
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Logging & Auditing: Basic logging and auditing are enabled. A central log collection system is being set up, but logs are not yet correlated or analyzed for behavioral anomalies.",
+            "Incident Response: A basic incident response plan is drafted, but it is not regularly tested or practiced. Roles are defined but not well-understood by all stakeholders."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Development",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Code Security: There is no formal process for securing data pipeline code. Secrets and credentials may be hardcoded or stored in insecure locations.",
+            "Secure Design: Security is not considered during the design phase of data pipelines. The focus is on functionality and performance, not security."
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Code Security: Basic checks are performed on code for hardcoded secrets, often manually. Secrets management is being introduced, but it's not yet integrated into the development workflow.",
+            "Secure Design: Security is considered a non-functional requirement. Basic threat modeling is performed for critical data pipelines."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Deployment",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Deployment Process: Data pipelines are deployed manually with no security checks or controls. The same pipeline is often used for both production and non-production environments."
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Deployment Process: A basic CI/CD pipeline is in use, but security checks are not integrated. Manual approval steps are in place, but they don't include security reviews."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Education and Guidance",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Training: There is no formal data security training for data professionals. Security is only discussed after an incident."
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Training: Basic, ad-hoc security training is provided to data professionals, often through informal channels like a single presentation. There is no consistent curriculum or ongoing education."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tests",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Security Testing: There is no formal security testing of data pipelines or platforms. Security is assumed to be handled by the platform."
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Security Testing: Basic security testing is performed, but it's often a manual, one-off effort (e.g., a simple vulnerability scan on a data pipeline). It is not part of a regular testing cycle."
+          ]
+        }
+      ]
+    }
+  ]
+}
