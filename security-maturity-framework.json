@@ -1,0 +1,454 @@
+{
+  "categories": [
+    {
+      "name": "Identity & Access",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Shared accounts used across teams",
+            "Manual access provisioning",
+            "Permissions assigned without documented process"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "RBAC model documented",
+            "User roles standardized",
+            "Access request process established"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "SSO integrated",
+            "Centralized IAM management",
+            "Automated provisioning and deprovisioning"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "Periodic access reviews automated",
+            "Access metrics tracked",
+            "Unused permissions identified"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "AI recommends least-privilege access",
+            "Behavior-based access risk detection",
+            "Adaptive permissions based on usage patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Secrets Management",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Credentials stored in files",
+            "Secrets shared manually",
+            "Hardcoded secrets exist"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Centralized vault adopted",
+            "Secret ownership defined",
+            "Secret usage documented"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "Automated secret rotation",
+            "Dynamic secret generation",
+            "CI/CD integrated with vault"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "Secret access monitoring",
+            "Expiration tracking",
+            "Usage metrics available"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "AI detects unusual secret usage",
+            "AI recommends rotation policies",
+            "Predictive exposure detection"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Infrastructure Security",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Manual infrastructure deployment",
+            "Security settings configured manually",
+            "No infrastructure baseline"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Infrastructure-as-Code adopted",
+            "Security baseline documented",
+            "Templates standardized"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "IaC security scanning enabled",
+            "Compliance checks integrated into CI/CD",
+            "Misconfiguration detection automated"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "Infrastructure drift tracked",
+            "Security posture metrics collected",
+            "Compliance coverage measured"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "AI proposes remediation",
+            "AI predicts infrastructure risks",
+            "Adaptive policy enforcement"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Data Protection",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Sensitive datasets identified manually",
+            "No consistent data classification",
+            "Ownership unclear"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Data classification process documented",
+            "Data owners assigned",
+            "Protection standards defined"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "Automated tagging implemented",
+            "Metadata synchronized",
+            "Classification rules enforced"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "Classification coverage measured",
+            "Unclassified data tracked",
+            "Protection metrics monitored"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "AI identifies sensitive datasets",
+            "AI detects exposure risks",
+            "Adaptive classification policies"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CI/CD Security",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Security reviews performed manually",
+            "Scanning performed before release only",
+            "No pipeline controls"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Dependency scanning enabled",
+            "SAST tools introduced",
+            "Security checklist established"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "Security gates enforced",
+            "Container scanning integrated",
+            "Artifact verification implemented"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "Vulnerability trends measured",
+            "MTTR tracked",
+            "Coverage metrics collected"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "AI prioritizes findings",
+            "AI suggests fixes",
+            "Risk-aware deployment recommendations"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Monitoring & Detection",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Logs collected",
+            "Manual investigation required",
+            "Limited visibility"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Alerts configured",
+            "Dashboards available",
+            "Basic monitoring strategy defined"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "Event correlation implemented",
+            "Centralized observability adopted",
+            "Detection rules automated"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "Detection effectiveness measured",
+            "False positives tracked",
+            "Alert coverage monitored"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "AI anomaly detection",
+            "AI summarizes incidents",
+            "Predictive threat detection"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Governance & Policy",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Security practices based on tribal knowledge",
+            "No formal policy structure",
+            "Responsibilities unclear"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Policies documented",
+            "Security ownership defined",
+            "Review process established"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "Policy-as-Code adopted",
+            "Automated compliance validation",
+            "Policies integrated into workflows"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "Compliance metrics collected",
+            "Policy violations measured",
+            "Coverage tracked"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "AI reviews architectures",
+            "AI recommends controls",
+            "Continuous adaptive governance"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Incident Response",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Incidents handled ad hoc",
+            "Knowledge dependent on individuals",
+            "No standard process"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Runbooks documented",
+            "Escalation paths defined",
+            "Roles assigned"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "Playbooks automated",
+            "Ticket integrations enabled",
+            "Response workflows standardized"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "Postmortems tracked",
+            "Response metrics measured",
+            "Lessons learned centralized"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "AI generates incident timelines",
+            "AI suggests remediation",
+            "Predictive incident prevention"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lineage & Traceability",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Dependencies documented manually",
+            "Data flow diagrams maintained manually",
+            "Limited visibility into changes"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "Lineage tools introduced",
+            "Ownership mapped",
+            "Data relationships documented"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "Automated lineage collection",
+            "Metadata integration enabled",
+            "Impact analysis supported"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "Lineage completeness measured",
+            "Coverage tracked",
+            "Change risk metrics collected"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "AI predicts downstream impact",
+            "AI identifies hidden dependencies",
+            "Adaptive risk scoring"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI-Assisted Security Operations",
+      "levels": [
+        {
+          "level": 1,
+          "parts": [
+            "Human-driven investigation only",
+            "Manual information collection",
+            "No AI support"
+          ]
+        },
+        {
+          "level": 2,
+          "parts": [
+            "AI chatbot available",
+            "Knowledge search enabled",
+            "Basic recommendations generated"
+          ]
+        },
+        {
+          "level": 3,
+          "parts": [
+            "AI summarizes findings",
+            "AI assists investigations",
+            "AI generates reports"
+          ]
+        },
+        {
+          "level": 4,
+          "parts": [
+            "AI executes approved workflows",
+            "Agent actions monitored",
+            "Performance metrics tracked"
+          ]
+        },
+        {
+          "level": 5,
+          "parts": [
+            "Multi-agent orchestration",
+            "Human-in-the-loop governance",
+            "Self-improving security workflows"
+          ]
+        }
+      ]
+    }
+  ]
+}
