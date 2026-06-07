@@ -1,0 +1,8 @@
+{
+  "IAM_MFA_ENFORCED": {
+    "aliases": ["mfa", "2fa", "multi factor", "authentication enforced"]
+  },
+  "IAM_SERVICE_ACCOUNTS": {
+    "aliases": ["service accounts", "machine identities", "non-human accounts"]
+  }
+}
