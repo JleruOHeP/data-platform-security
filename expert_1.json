@@ -1,0 +1,21 @@
+{
+  "weight": 0.5,
+  "nodes": [
+    "IAM_MFA_ENFORCED",
+    "IAM_RISK"
+  ],
+  "cpds": {
+    "IAM_MFA_ENFORCED": {
+      "type": "prior",
+      "values": [0.4, 0.6]
+    },
+    "IAM_RISK": {
+      "type": "cpt",
+      "evidence": ["IAM_MFA_ENFORCED"],
+      "values": [
+        [0.9, 0.4],
+        [0.1, 0.6]
+      ]
+    }
+  }
+}
