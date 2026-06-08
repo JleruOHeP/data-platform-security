@@ -11,13 +11,43 @@ from pgmpy.inference import VariableElimination
 # 1. Load Control Registry
 # ----------------------------
 
-def load_control_registry(path="control_registry.json"):
-    with open(path, "r") as f:
-        return json.load(f)
+def build_alias_map(control_registry):
+    alias_map = {}
+
+    for canonical, metadata in control_registry.items():
+        alias_map[canonical.lower()] = canonical
+        for alias in metadata.get("aliases", []):
+            alias_map[alias.strip().lower()] = canonical
+
+    return alias_map
 
 
-CONTROL_REGISTRY = load_control_registry()
+def normalize_evidence(raw_evidence, control_registry_path="control_registry.json"):
+    control_registry: dict
+    with open(control_registry_path) as f:
+        control_registry = json.load(f)
+    
+    alias_map = build_alias_map(control_registry)
+    normalized = {}
 
+    for raw_key, raw_value in raw_evidence.items():
+        key = str(raw_key).strip().lower()
+        canonical_key = alias_map.get(key, raw_key)
+
+        if isinstance(raw_value, bool):
+            normalized[canonical_key] = 1 if raw_value else 0
+        elif isinstance(raw_value, str):
+            lowered = raw_value.strip().lower()
+            if lowered in {"true", "yes", "y", "1", "on"}:
+                normalized[canonical_key] = 1
+            elif lowered in {"false", "no", "n", "0", "off"}:
+                normalized[canonical_key] = 0
+            else:
+                normalized[canonical_key] = raw_value
+        else:
+            normalized[canonical_key] = raw_value
+
+    return normalized
 
 # ----------------------------
 # 2. Load Expert Models
@@ -120,12 +150,44 @@ def infer(model, target_node, evidence):
     if target_node is None:
         target_node = list(model.nodes())[-1]
 
+    # Filter evidence to only include variables in this model's graph
+    filtered_evidence = {k: v for k, v in evidence.items() if k in model.nodes()}
+
     result = inference.query(
         variables=[target_node],
-        evidence=evidence,
+        evidence=filtered_evidence,
     )
 
     return float(result.values[1])  # P(high risk)
+
+
+def analyze_evidence_contribution(model, target_node, evidence):
+    """
+    For each evidence variable, compute its contribution to the output probability
+    by measuring the difference when that variable is excluded.
+    Returns a list of (variable, contribution) tuples sorted by impact.
+    """
+    # Only analyze evidence variables that are in this expert's model
+    relevant_evidence = {k: v for k, v in evidence.items() if k in model.nodes()}
+    
+    if not relevant_evidence:
+        return []
+    
+    base_prob = infer(model, target_node, evidence)
+    contributions = []
+
+    for var in relevant_evidence.keys():
+        # Remove this variable and re-infer
+        reduced_evidence = {k: v for k, v in evidence.items() if k != var}
+        prob_without = infer(model, target_node, reduced_evidence)
+        
+        # Contribution is the absolute change
+        contribution = abs(base_prob - prob_without)
+        contributions.append((var, contribution, base_prob, prob_without))
+
+    # Sort by contribution descending
+    contributions.sort(key=lambda x: x[1], reverse=True)
+    return contributions
 
 
 # ----------------------------
@@ -141,11 +203,23 @@ def run_mixture(evidence):
         weight = cfg["weight"]
 
         p = infer(model, target, evidence)
+        
+        # Analyze which evidence contributed most to this expert's probability
+        contributions = analyze_evidence_contribution(model, target, evidence)
+        top_contributor = contributions[0] if contributions else None
 
         results.append({
             "expert": name,
             "probability": p,
             "weight": weight,
+            "top_evidence": {
+                "variable": top_contributor[0],
+                "contribution": top_contributor[1],
+            } if top_contributor else None,
+            "evidence_analysis": [
+                {"variable": var, "contribution": contrib}
+                for var, contrib, _, _ in contributions
+            ] if contributions else [],
         })
 
     # FIX 4: normalise weights so the final score stays in [0, 1].
@@ -155,9 +229,16 @@ def run_mixture(evidence):
 
     final = sum(r["probability"] * r["weight"] for r in results) / total_weight
 
+    # Find the expert with the highest weighted contribution
+    max_contributor = max(results, key=lambda r: r["probability"] * r["weight"])
+
     return {
         "per_expert": results,
         "final_risk_probability": final,
+        "top_contributor_expert": {
+            "expert": max_contributor["expert"],
+            "contribution": max_contributor["probability"] * max_contributor["weight"],
+        },
     }
 
 
@@ -169,14 +250,28 @@ if __name__ == "__main__":
 
     # This comes from LLM (already mapped using control registry)
     user_evidence = {
-        "IAM_MFA_ENFORCED": 1
+        "mfa": True,
+        "CICD_PIPELINE_EXISTS": 1
     }
 
-    output = run_mixture(user_evidence)
+    evidence = normalize_evidence(user_evidence)
+
+    output = run_mixture(evidence)
 
     print("\n=== Expert Results ===")
     for r in output["per_expert"]:
-        print(r)
+        print(f"\nExpert: {r['expert']}")
+        print(f"  Probability: {r['probability']:.4f}")
+        print(f"  Weight: {r['weight']}")
+        if r["top_evidence"]:
+            print(f"  Top evidence contributor: {r['top_evidence']['variable']} (Δ={r['top_evidence']['contribution']:.4f})")
+        if r["evidence_analysis"]:
+            print(f"  All evidence impact:")
+            for ea in r["evidence_analysis"]:
+                print(f"    - {ea['variable']}: {ea['contribution']:.4f}")
 
     print("\n=== Final Risk ===")
     print(output["final_risk_probability"])
+
+    print("\n=== Top Contributor Expert ===")
+    print(output["top_contributor_expert"])

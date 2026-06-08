@@ -4,5 +4,14 @@
   },
   "IAM_SERVICE_ACCOUNTS": {
     "aliases": ["service accounts", "machine identities", "non-human accounts"]
+  },
+  "CICD_PIPELINE_EXISTS": {
+    "aliases": ["cicd pipeline", "ci/cd pipeline", "continuous integration", "continuous delivery"]
+  },
+  "CICD_SECURITY_SCANNING": {
+    "aliases": ["cicd security scanning", "ci/cd security scanning", "continuous security testing"]
+  },
+  "CICD_BRANCH_PROTECTION": {
+    "aliases": ["cicd branch protection", "ci/cd branch protection", "protected branches"]
   }
 }
