@@ -1,0 +1,17 @@
+{
+    "scenario": "3",
+    "description": "A data platform with basic security controls in place, but with some gaps that could be exploited by attackers.",
+    "weight_overrides": {
+        "iam_expert": 1,
+        "platform_expert": 0,
+        "monitoring_expert": 0,
+        "data_protection_expert": 0,
+        "secrets_expert": 0,
+        "cicd_expert": 0,
+        "network_expert": 0
+    },
+    "evidence": {
+        "mfa": 1,
+        "CICD_PIPELINE_EXISTS": 1
+    }
+}

@@ -1,5 +1,8 @@
 {
-
+    "scenario": "2",
+    "description": "Data platform with missing controls for CREDENTIAL_THEFT_RISK, but the rest of UNAUTHORIZED_ACCESS risks covered. Also DEPENDENCY_SCANNING implemnted, but PIPELINE_ISOLATION missing.",
+    
+    "evidence": {
         "IAM_MFA_ENFORCED": 0,
         "IAM_NO_SHARED_ACCOUNTS": 0,
 
@@ -9,5 +12,7 @@
         "IAM_PRIVILEGED_ACCESS_MANAGEMENT": 1,
         "ADMIN_ACCOUNT_SEPARATION": 1,
 
-        "DEPENDENCY_SCANNING": 1
+        "DEPENDENCY_SCANNING": 1,
+        "PIPELINE_ISOLATION": 0
+    }
 }

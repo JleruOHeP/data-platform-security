@@ -13,13 +13,13 @@
     "DATA_CLASSIFICATION": {
       "type": "control"
     },
-    
+
     "DATA_EXPOSURE_RISK": {
       "type": "cpt",
       "evidence": ["DATA_ENCRYPTION", "DATA_CLASSIFICATION"],
       "values": [
-        [0.95, 0.80, 0.90, 0.65],
-        [0.05, 0.20, 0.10, 0.35]
+        [0.05, 0.30, 0.40, 0.90],
+        [0.95, 0.70, 0.60, 0.10]
       ]
     }
   }
