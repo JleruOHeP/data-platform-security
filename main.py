@@ -7,13 +7,15 @@ from security_architect import INCIDENT_MODEL, run_incident_layer, find_top_inci
 from security_experts import EXPERTS, infer, analyze_evidence_contribution, find_expert_by_risk_node, find_top_control_for_risk
 
 
-def run_mixture(evidence):
+def run_mixture(evidence, weight_overrides=None):
     results = []
 
     for name, cfg in EXPERTS.items():
         model = cfg["model"]
         targets = cfg.get("targets", [])
         weight = cfg["weight"]
+        if weight_overrides is not None:
+            weight = weight_overrides.get(name, weight)
         risk_nodes = cfg.get("risk_nodes", [])
         target_results = []
         for t in targets:
@@ -51,12 +53,12 @@ def main():
 
     input_path = Path(sys.argv[1])
     
-    user_evidence = {}
+    scenario = {}
     with open(input_path, 'r', encoding='utf-8') as f:
-        user_evidence = json.load(f)
+        scenario = json.load(f)
 
-    evidence = normalize_evidence(user_evidence)
-    output = run_mixture(evidence)
+    evidence = normalize_evidence(scenario.get("evidence", {}))
+    output = run_mixture(evidence, scenario.get("weight_overrides", {}))
 
     print("\n=== Expert Results ===")
     for r in output["per_expert"]:
