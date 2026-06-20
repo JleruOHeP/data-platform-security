@@ -3,7 +3,7 @@
   "nodes": [
     "IAM_MFA_ENFORCED",
     "IAM_PRIVILEGED_ACCESS_MANAGEMENT",
-    "IAM_SHARED_ACCOUNTS",
+    "IAM_NO_SHARED_ACCOUNTS",
     "IAM_EXCESSIVE_PERMISSIONS",
     "ADMIN_ACCOUNT_SEPARATION",
 
@@ -16,7 +16,7 @@
     "IAM_PRIVILEGED_ACCESS_MANAGEMENT": {
       "type": "control"
     },
-    "IAM_SHARED_ACCOUNTS": {
+    "IAM_NO_SHARED_ACCOUNTS": {
       "type": "control"
     },
     "IAM_EXCESSIVE_PERMISSIONS": {
@@ -30,7 +30,7 @@
       "type": "cpt",
       "evidence": [
         "IAM_MFA_ENFORCED",
-        "IAM_SHARED_ACCOUNTS"
+        "IAM_NO_SHARED_ACCOUNTS"
       ],
       "values": [
         [0.10, 0.40, 0.70, 0.95],

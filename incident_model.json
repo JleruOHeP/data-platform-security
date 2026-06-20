@@ -6,38 +6,6 @@
     "SUPPLY_CHAIN_COMPROMISE"
   ],
   "cpds": {
-    "CREDENTIAL_THEFT_RISK": {
-      "type": "risk"
-    },
-    "CICD_RISK": {
-      "type": "risk"
-    },
-    "IAM_RISK": {
-      "type": "risk"
-    },
-    "NETWORK_RISK": {
-      "type": "risk"
-    },
-    "SECRETS_RISK": {
-      "type": "risk"
-    },
-    "DATA_PROTECTION_RISK": {
-      "type": "risk"
-    },
-    "MONITORING_RISK": {
-      "type": "risk"
-    },
-    "PLATFORM_RISK": {
-      "type": "risk"
-    },
-    "NETWORK_INTRUSION_RISK": {
-      "type": "risk"
-    },
-    "PRIVILEGE_ESCALATION_RISK": {
-      "type": "risk"
-    },
-
-
     "UNAUTHORIZED_ACCESS": {
         "type": "cpt",
         "evidence": [
@@ -52,28 +20,41 @@
     },
 
     "DATA_EXFILTRATION": {
-      "type": "cpt",
-      "evidence": ["IAM_RISK", "NETWORK_RISK", "DATA_PROTECTION_RISK", "MONITORING_RISK"],
-      "values": [
-        [0.97, 0.90, 0.92, 0.85, 0.90, 0.80, 0.82, 0.70, 0.92, 0.82, 0.84, 0.72, 0.80, 0.60, 0.65, 0.30],
-        [0.03, 0.10, 0.08, 0.15, 0.10, 0.20, 0.18, 0.30, 0.08, 0.18, 0.16, 0.28, 0.20, 0.40, 0.35, 0.70]
-      ]
+        "type": "cpt",
+        "evidence": [
+            "CREDENTIAL_THEFT_RISK",
+            "DATA_EXPOSURE_RISK",
+            "DETECTION_GAP_RISK"
+        ],
+        "values": [
+            [0.98, 0.90, 0.88, 0.65, 0.85, 0.50, 0.40, 0.05],
+            [0.02, 0.10, 0.12, 0.35, 0.15, 0.50, 0.60, 0.95]
+        ]
     },
+
     "SERVICE_DISRUPTION": {
-      "type": "cpt",
-      "evidence": ["NETWORK_RISK", "PLATFORM_RISK", "MONITORING_RISK"],
-      "values": [
-        [0.94, 0.85, 0.80, 0.70, 0.80, 0.65, 0.55, 0.25],
-        [0.06, 0.15, 0.20, 0.30, 0.20, 0.35, 0.45, 0.75]
-      ]
-    },
+        "type": "cpt",
+        "evidence": [
+            "NETWORK_INTRUSION_RISK",
+            "RECOVERY_FAILURE_RISK",
+            "OPERATIONAL_ERROR_RISK"
+        ],
+        "values": [
+            [0.97, 0.88, 0.85, 0.65, 0.75, 0.45, 0.35, 0.05],
+            [0.03, 0.12, 0.15, 0.35, 0.25, 0.55, 0.65, 0.95]
+        ]
+        },
     "SUPPLY_CHAIN_COMPROMISE": {
-      "type": "cpt",
-      "evidence": ["CICD_RISK", "NETWORK_RISK", "PLATFORM_RISK"],
-      "values": [
-        [0.96, 0.88, 0.85, 0.75, 0.88, 0.72, 0.65, 0.30],
-        [0.04, 0.12, 0.15, 0.25, 0.12, 0.28, 0.35, 0.70]
-      ]
-    }
+        "type": "cpt",
+        "evidence": [
+            "DEPENDENCY_RISK",
+            "CI_CD_COMPROMISE_RISK",
+            "THIRD_PARTY_TRUST_RISK"
+        ],
+        "values": [
+            [0.99, 0.92, 0.90, 0.70, 0.80, 0.55, 0.45, 0.05],
+            [0.01, 0.08, 0.10, 0.30, 0.20, 0.45, 0.55, 0.95]
+        ]
+        }
   }
 }

@@ -47,7 +47,14 @@ def _build_node_cpd(node, cfg, prior_overrides=None):
 
 def _build_bn(cpds, prior_overrides=None):
     model = DiscreteBayesianNetwork()
-    for node in cpds:
+    all_nodes = set(cpds)
+
+    for node, cfg in cpds.items():
+        if cfg["type"] == "cpt":
+            for parent in cfg["evidence"]:
+                all_nodes.add(parent)
+
+    for node in all_nodes:
         model.add_node(node)
 
     for node, cfg in cpds.items():
@@ -60,6 +67,19 @@ def _build_bn(cpds, prior_overrides=None):
         for node, cfg in cpds.items()
     ]
 
+    missing_priors = all_nodes - set(cpds)
+    for node in missing_priors:
+        prior_value = 1.0
+        if prior_overrides and node in prior_overrides:
+            prior_value = max(0.0, min(1.0, float(prior_overrides[node])))
+        cpd_objects.append(
+            TabularCPD(
+                variable=node,
+                variable_card=2,
+                values=[[1.0 - prior_value], [prior_value]],
+            )
+        )
+
     model.add_cpds(*cpd_objects)
     model.check_model()
     return model
@@ -71,33 +91,20 @@ def infer(model, target_node, evidence):
     if target_node is None:
         target_node = list(model.nodes())[-1]
 
-    # Separate hard evidence (0 or 1) from soft evidence (0-1 floats)
     hard_evidence = {}
-    soft_evidence_dict = {}
     
     model_nodes = set(model.nodes())
     for node, value in evidence.items():
         if node not in model_nodes:
             continue
         
-        if value == 0 or value == 1:
-            hard_evidence[node] = int(value)
-        else:
-            # Soft evidence: P(node=1) = value, P(node=0) = 1-value
-            soft_evidence_dict[node] = {0: 1.0 - value, 1: value}
+        hard_evidence[node] = int(value)
     
-    # If we have soft evidence, use it; otherwise use hard evidence
-    if soft_evidence_dict:
-        result = inference.map_query(
-            variables=[target_node],
-            evidence=hard_evidence if hard_evidence else None,
-            soft_evidence=soft_evidence_dict if soft_evidence_dict else None,
-        )
-    else:
-        result = inference.query(
-            variables=[target_node],
-            evidence=hard_evidence if hard_evidence else None,
-        )
+    
+    result = inference.query(
+        variables=[target_node],
+        evidence=hard_evidence if hard_evidence else None,
+    )
 
     return float(result.values[1])
 
@@ -118,10 +125,12 @@ def load_all_experts(folder="experts"):
         expert_json = load_expert(file)
         model = build_bn_from_expert(expert_json)
         name = os.path.basename(file).replace(".json", "")
-        risk_nodes = [node for node, cfg in expert_json["cpds"].items() if cfg["type"] == "cpt"]
+        # targets: all CPD nodes of type 'cpt' are considered expert targets
+        targets = [node for node, cfg in expert_json["cpds"].items() if cfg["type"] == "cpt"]
+        risk_nodes = targets[:]  # risk nodes are the same as these CPD targets for experts
         experts[name] = {
             "model": model,
-            "target": expert_json.get("target") or (expert_json.get("nodes") or [None])[-1],
+            "targets": targets,
             "weight": expert_json["weight"],
             "risk_nodes": risk_nodes,
         }
@@ -148,3 +157,38 @@ def analyze_evidence_contribution(model, target_node, evidence):
 
     contributions.sort(key=lambda x: x[1], reverse=True)
     return contributions
+
+
+def find_expert_by_risk_node(risk_node):
+    for name, cfg in EXPERTS.items():
+        if risk_node in cfg.get("targets", []) or risk_node in cfg.get("risk_nodes", []):
+            return name, cfg
+    return None, None
+
+
+def find_top_control_for_risk(model, risk_node, evidence):
+    # Find direct parents (controls) of the risk node in the expert model
+    try:
+        parents = list(model.get_parents(risk_node))
+    except Exception:
+        # Fallback: no parents available
+        parents = []
+
+    if not parents:
+        return None
+
+    base_prob = infer(model, risk_node, evidence)
+    best = None
+    best_delta = 0.0
+
+    for parent in parents:
+        # simulate implementing the control (set to 1)
+        modified_evidence = dict(evidence)
+        modified_evidence[parent] = 1
+        prob_with = infer(model, risk_node, modified_evidence)
+        delta = base_prob - prob_with
+        if delta > best_delta:
+            best_delta = delta
+            best = (parent, delta, base_prob, prob_with)
+
+    return best

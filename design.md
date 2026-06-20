@@ -69,12 +69,3 @@ Threat
     ↓
 Incident
 
-
-
-
-----
-source venv/bin/activate 
-pip install pgmpy
-
-----
-brew install python@3.11

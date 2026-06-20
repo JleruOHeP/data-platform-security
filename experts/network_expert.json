@@ -1,7 +1,7 @@
 {
   "weight": 0.5,
   "nodes": [
-    "NETWORK_PUBLIC_EXPOSURE",
+    "NETWORK_NO_PUBLIC_EXPOSURE",
     "NETWORK_SEGMENTATION",
     "NETWORK_EGRESS_CONTROLS",
     "NETWORK_ISOLATION",
@@ -9,7 +9,7 @@
     "NETWORK_INTRUSION_RISK"
   ],
   "cpds": {
-    "NETWORK_PUBLIC_EXPOSURE": {
+    "NETWORK_NO_PUBLIC_EXPOSURE": {
       "type": "control"
     },
     "NETWORK_SEGMENTATION": {
@@ -25,7 +25,7 @@
     "NETWORK_INTRUSION_RISK": {
       "type": "cpt",
       "evidence": [
-        "NETWORK_PUBLIC_EXPOSURE",
+        "NETWORK_NO_PUBLIC_EXPOSURE",
         "NETWORK_SEGMENTATION"
         ],
       "values": [

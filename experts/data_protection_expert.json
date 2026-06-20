@@ -3,7 +3,8 @@
   "nodes": [
     "DATA_ENCRYPTION",
     "DATA_CLASSIFICATION",
-    "DATA_PROTECTION_RISK"
+
+    "DATA_EXPOSURE_RISK"
   ],
   "cpds": {
     "DATA_ENCRYPTION": {
@@ -12,7 +13,8 @@
     "DATA_CLASSIFICATION": {
       "type": "control"
     },
-    "DATA_PROTECTION_RISK": {
+    
+    "DATA_EXPOSURE_RISK": {
       "type": "cpt",
       "evidence": ["DATA_ENCRYPTION", "DATA_CLASSIFICATION"],
       "values": [

@@ -1,6 +1,6 @@
 # Data Platform Security Bayesian Inference
 
-This project runs a multi-expert Bayesian inference engine for data platform security. It collects evidence, evaluates expert risk models, and combines their risk probabilities into a higher-level incident probability.
+This project runs a multi-expert Bayesian inference engine for data platform security. It collects evidence, evaluates expert risk models, and combines their risk probabilities into higher-level incident probabilities.
 
 ## What the code does
 
@@ -14,14 +14,14 @@ This project runs a multi-expert Bayesian inference engine for data platform sec
 ## How to run
 
 1. Install dependencies (assumes Python is available):
-   ```powershell
-   python -m pip install pgmpy
-   ```
+  ```powershell
+  python -m pip install pgmpy
+  ```
 
-2. Run the app:
-   ```powershell
-   python main.py
-   ```
+2. Run the app with a scenario file (JSON of user evidence):
+  ```powershell
+  python main.py scenarios/1.json
+  ```
 
 3. The result is printed to the console and saved to `result.json`.
 
@@ -42,34 +42,23 @@ This means:
 - `mfa` is normalized to `IAM_MFA_ENFORCED`
 - `CICD_PIPELINE_EXISTS` remains the same
 
-When a control value is `1`, it is treated as `True` and matched to the `True` state of any corresponding `prior` node.
-For example, `CICD_PIPELINE_EXISTS = 1` is equivalent to setting `P(CICD_PIPELINE_EXISTS = True) = 1` during inference.
+When a control value is `1`, it is treated as `True` and matched to the `True` state of the corresponding control node.
+For example, `CICD_PIPELINE_EXISTS = 1` is used as hard evidence `CICD_PIPELINE_EXISTS=True` during inference.
+- `P(CICD_PIPELINE_EXISTS = False) = 0`
+- `P(CICD_PIPELINE_EXISTS = True) = 1`
 
-If a control does not appear in the evidence dictionary, the model uses the prior distribution defined in the expert JSON.
+If a control does not appear in the evidence dictionary, the model assumes it is missing (set to 0).
+- `P(MISSING_CONTROL = False) = 1`
+- `P(MISSING_CONTROL = True) = 0`
 
 ## Expert JSON format
 
 Expert definitions in `experts/` use a Bayesian network structure with:
 
-- `cpds`: a dictionary of conditional probability distributions for each node.
-- Each node is either a `control` or a `cpt`.
+- `cpds`: a dictionary of **conditional probability distributions** for each node.
+- Each node is either a `control` or a `cpt` - target risks of this expert.
 
-### `control` nodes
-
-A `control` node defines the prior probability of a control being false or true when no evidence is provided.
-
-Example:
-
-```json
-"CICD_PIPELINE_EXISTS": {
-  "type": "control",
-  "values": [0.3, 0.7]
-}
-```
-
-This means:
-- `P(CICD_PIPELINE_EXISTS = False) = 0.3`
-- `P(CICD_PIPELINE_EXISTS = True) = 0.7`
+Important: expert files may contain multiple target risk nodes. The loader automatically treats every `cpt` node from an expert as an expert target (no single `target` field is required).
 
 ### `cpt` nodes
 
@@ -110,28 +99,38 @@ So the second row means:
 - `main.py`
   - Application entrypoint.
   - Orchestrates evidence normalization, expert inference, incident inference, and output persistence.
+  - Prints a compact per-expert summary and incident probabilities.
+  - After an initial run the app will attempt to suggest a control to implement for the highest incident and will re-run the inference with that control set to `1` to show the updated incident probability.
 
 - `evidence.py`
   - Contains evidence normalization logic.
-  - Maps input aliases to canonical control names and converts values to binary states.
+  - Maps input aliases to canonical control names and converts values to 0/1 floats.
 
 - `security_experts.py`
   - Loads expert Bayesian network definitions.
   - Builds and evaluates expert models.
-  - Computes evidence contributions for each expert.
+  - Each expert exposes a `targets` list (all `cpt` nodes) and `risk_nodes` used as priors for incidents.
+  - Provides helpers to compute evidence contributions and to suggest a control (by simulating each parent control set to 1).
 
 - `security_architect.py`
   - Loads the incident-level Bayesian model.
-  - Combines expert risk outputs to infer incident probabilities.
+  - Builds the incident BN by combining CPTs from `incident_model.json` and injecting expert-provided priors for risk nodes.
+  - Provides a helper to identify which risk node (from the incident CPT parents) contributes most to a chosen incident.
 
 - `incident_model.json`
-  - Defines the incident-level network and how expert risk nodes influence a security incident.
+  - Contains only the final incident CPTs (no duplicated risk nodes). The incident BN builder will add missing prior nodes and set their prior according to expert outputs when available.
 
 - `experts/`
-  - Contains expert model JSON files used for individual expert inference.
+  - Contains expert model JSON files used for individual expert inference. Each expert may provide multiple `cpt` risk nodes.
 
 ## Output
 
 - `result.json`
-  - Contains the full inference result object.
+  - Contains the full inference result object and per-expert targets.
   - Overwrites any existing file each run.
+
+Console output summary includes:
+- Compact per-expert line: `risks: RISK1=0.1234, RISK2=0.0500` and `weight`.
+- `Final Risk` scalar (weighted aggregate across experts).
+- `Incident Level Results` listing each incident and its probability.
+- A suggested control line (if found) that shows the incident probability after re-running inference with that control set to `1`.
