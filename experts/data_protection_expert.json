@@ -1,0 +1,24 @@
+{
+  "weight": 0.5,
+  "nodes": [
+    "DATA_ENCRYPTION",
+    "DATA_CLASSIFICATION",
+    "DATA_PROTECTION_RISK"
+  ],
+  "cpds": {
+    "DATA_ENCRYPTION": {
+      "type": "control"
+    },
+    "DATA_CLASSIFICATION": {
+      "type": "control"
+    },
+    "DATA_PROTECTION_RISK": {
+      "type": "cpt",
+      "evidence": ["DATA_ENCRYPTION", "DATA_CLASSIFICATION"],
+      "values": [
+        [0.95, 0.80, 0.90, 0.65],
+        [0.05, 0.20, 0.10, 0.35]
+      ]
+    }
+  }
+}

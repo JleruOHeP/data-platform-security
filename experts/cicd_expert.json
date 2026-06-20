@@ -8,16 +8,13 @@
   ],
   "cpds": {
     "CICD_PIPELINE_EXISTS": {
-      "type": "prior",
-      "values": [0.3, 0.7]
+      "type": "control"
     },
     "CICD_SECURITY_SCANNING": {
-      "type": "prior",
-      "values": [0.4, 0.6]
+      "type": "control"
     },
     "CICD_BRANCH_PROTECTION": {
-      "type": "prior",
-      "values": [0.3, 0.7]
+      "type": "control"
     },
     "CICD_RISK": {
       "type": "cpt",

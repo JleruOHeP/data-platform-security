@@ -13,5 +13,8 @@
   },
   "CICD_BRANCH_PROTECTION": {
     "aliases": ["cicd branch protection", "ci/cd branch protection", "protected branches"]
+  },
+  "IAM_SHARED_ACCOUNTS": {
+    "aliases": ["shared accounts", "shared credentials", "shared access"]
   }
 }
