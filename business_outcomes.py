@@ -1,11 +1,9 @@
-import json
-
 from security_experts import build_bn_from_config, infer
 
 
-def load_business_model(file_path="business_outcomes.json"):
-    with open(file_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+def load_business_model(store=None):
+    from neo4j_store import get_store
+    return (store or get_store()).load_model("business")
 
 
 def build_business_bn(business_json, incident_priors=None):
@@ -47,6 +45,3 @@ def run_business_layer(incident_inputs, business_config):
         })
 
     return business_results
-
-
-BUSINESS_MODEL = load_business_model()

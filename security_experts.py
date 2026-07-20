@@ -1,15 +1,6 @@
-import json
-import os
-from glob import glob
-
 from pgmpy.models import DiscreteBayesianNetwork
 from pgmpy.factors.discrete import TabularCPD
 from pgmpy.inference import VariableElimination
-
-
-def load_expert(file_path):
-    with open(file_path, "r") as f:
-        return json.load(f)
 
 
 def _build_node_cpd(node, cfg, prior_overrides=None):
@@ -118,27 +109,20 @@ def build_bn_from_config(model_json, prior_overrides=None):
     return _build_bn(model_json["cpds"], prior_overrides=prior_overrides)
 
 
-def load_all_experts(folder="experts"):
-    experts = {}
+def load_all_experts(store=None):
+    from neo4j_store import get_store
 
-    for file in glob(os.path.join(folder, "*.json")):
-        expert_json = load_expert(file)
-        model = build_bn_from_expert(expert_json)
-        name = os.path.basename(file).replace(".json", "")
-        # targets: all CPD nodes of type 'cpt' are considered expert targets
-        targets = [node for node, cfg in expert_json["cpds"].items() if cfg["type"] == "cpt"]
-        risk_nodes = targets[:]  # risk nodes are the same as these CPD targets for experts
+    definitions = (store or get_store()).load_experts()
+    experts = {}
+    for name, definition in definitions.items():
+        model = build_bn_from_expert(definition)
         experts[name] = {
             "model": model,
-            "targets": targets,
-            "weight": expert_json["weight"],
-            "risk_nodes": risk_nodes,
+            "targets": definition["targets"],
+            "weight": definition["weight"],
+            "risk_nodes": definition["risk_nodes"],
         }
-
     return experts
-
-
-EXPERTS = load_all_experts()
 
 
 def analyze_evidence_contribution(model, target_node, evidence):
@@ -159,8 +143,8 @@ def analyze_evidence_contribution(model, target_node, evidence):
     return contributions
 
 
-def find_expert_by_risk_node(risk_node):
-    for name, cfg in EXPERTS.items():
+def find_expert_by_risk_node(risk_node, experts):
+    for name, cfg in experts.items():
         if risk_node in cfg.get("targets", []) or risk_node in cfg.get("risk_nodes", []):
             return name, cfg
     return None, None

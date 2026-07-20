@@ -1,6 +1,16 @@
 import unittest
 
-from business_outcomes import BUSINESS_MODEL, run_business_layer
+from business_outcomes import run_business_layer
+
+
+BUSINESS_MODEL = {
+    "targets": ["REVENUE_IMPACT", "REGULATORY_IMPACT", "CUSTOMER_IMPACT"],
+    "cpds": {
+        "REVENUE_IMPACT": {"type": "cpt", "evidence": ["UNAUTHORIZED_ACCESS"], "values": [[0.9, 0.2], [0.1, 0.8]]},
+        "REGULATORY_IMPACT": {"type": "cpt", "evidence": ["DATA_EXFILTRATION"], "values": [[0.95, 0.3], [0.05, 0.7]]},
+        "CUSTOMER_IMPACT": {"type": "cpt", "evidence": ["SERVICE_DISRUPTION"], "values": [[0.9, 0.4], [0.1, 0.6]]},
+    },
+}
 
 
 class BusinessOutcomesTests(unittest.TestCase):

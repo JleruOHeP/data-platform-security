@@ -1,11 +1,9 @@
-import json
-
 from security_experts import build_bn_from_config, infer
 
 
-def load_incident_model(file_path="incident_model.json"):
-    with open(file_path, "r") as f:
-        return json.load(f)
+def load_incident_model(store=None):
+    from neo4j_store import get_store
+    return (store or get_store()).load_model("incident")
 
 
 def build_incident_bn(incident_json, expert_risk_probabilities=None):
@@ -65,6 +63,3 @@ def find_top_incident_risk(expert_results, incident_config, incident_target):
             best = (risk_node, base_prob, modified_prob)
 
     return best
-
-
-INCIDENT_MODEL = load_incident_model()

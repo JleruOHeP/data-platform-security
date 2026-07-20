@@ -65,6 +65,8 @@ coverage.xml
 # Local environment files
 .env
 .env.*
+!.env.example
 
 # Output files
 result.json
+controls.json

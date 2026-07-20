@@ -1,4 +1,4 @@
-import json
+from neo4j_store import get_store
 
 
 def build_alias_map(control_registry):
@@ -12,10 +12,9 @@ def build_alias_map(control_registry):
     return alias_map
 
 
-def normalize_evidence(raw_evidence, control_registry_path="control_registry.json"):
-    with open(control_registry_path) as f:
-        control_registry = json.load(f)
-
+def normalize_evidence(raw_evidence, control_registry=None):
+    if control_registry is None:
+        control_registry = get_store().load_control_registry()
     alias_map = build_alias_map(control_registry)
     normalized = {}
 

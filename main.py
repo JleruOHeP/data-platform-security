@@ -3,15 +3,18 @@ import sys
 from pathlib import Path
 
 from evidence import normalize_evidence
-from security_architect import INCIDENT_MODEL, run_incident_layer, find_top_incident_risk
-from security_experts import EXPERTS, infer, analyze_evidence_contribution, find_expert_by_risk_node, find_top_control_for_risk
-from business_outcomes import BUSINESS_MODEL, run_business_layer
+from security_architect import load_incident_model, run_incident_layer, find_top_incident_risk
+from security_experts import load_all_experts, infer, find_expert_by_risk_node, find_top_control_for_risk
+from business_outcomes import load_business_model, run_business_layer
 
 
-def run_mixture(evidence, weight_overrides=None):
+def run_mixture(evidence, weight_overrides=None, experts=None, incident_model=None, business_model=None):
+    experts = experts or load_all_experts()
+    incident_model = incident_model or load_incident_model()
+    business_model = business_model or load_business_model()
     results = []
 
-    for name, cfg in EXPERTS.items():
+    for name, cfg in experts.items():
         model = cfg["model"]
         targets = cfg.get("targets", [])
         weight = cfg["weight"]
@@ -38,9 +41,9 @@ def run_mixture(evidence, weight_overrides=None):
 
     # compute a weighted aggregate final risk using each expert's max target probability
     final_risk_probability = sum(max((t["probability"] for t in r["targets"]), default=0.0) * r["weight"] for r in results) / total_weight
-    incident_results = run_incident_layer(results, INCIDENT_MODEL)
+    incident_results = run_incident_layer(results, incident_model)
 
-    business_results = run_business_layer(incident_results, BUSINESS_MODEL)
+    business_results = run_business_layer(incident_results, business_model)
 
     return {
         "per_expert": results,
@@ -61,8 +64,11 @@ def main():
     with open(input_path, 'r', encoding='utf-8') as f:
         scenario = json.load(f)
 
+    experts = load_all_experts()
+    incident_model = load_incident_model()
+    business_model = load_business_model()
     evidence = normalize_evidence(scenario.get("evidence", {}))
-    output = run_mixture(evidence, scenario.get("weight_overrides", {}))
+    output = run_mixture(evidence, scenario.get("weight_overrides", {}), experts, incident_model, business_model)
 
     print("\n=== Expert Results ===")
     for r in output["per_expert"]:
@@ -88,11 +94,11 @@ def main():
         json.dump(output, f, indent=2)
 
     top_incident = max(output["incident_results"], key=lambda i: i["probability"])
-    top_choice = find_top_incident_risk(output["per_expert"], INCIDENT_MODEL, top_incident["incident"])
+    top_choice = find_top_incident_risk(output["per_expert"], incident_model, top_incident["incident"])
 
     if top_choice:
         risk_node, base_prob, modified_prob = top_choice
-        expert_name, expert_cfg = find_expert_by_risk_node(risk_node)
+        expert_name, expert_cfg = find_expert_by_risk_node(risk_node, experts)
         if expert_cfg:
             suggestion = find_top_control_for_risk(expert_cfg["model"], risk_node, evidence)
             if suggestion:
@@ -100,7 +106,7 @@ def main():
                 # re-run full inference with the suggested control implemented (set to 1)
                 evidence_with_control = dict(evidence)
                 evidence_with_control[control_name] = 1
-                new_output = run_mixture(evidence_with_control)
+                new_output = run_mixture(evidence_with_control, experts=experts, incident_model=incident_model, business_model=business_model)
                 new_prob = None
                 for inc in new_output.get("incident_results", []):
                     if inc.get("incident") == top_incident["incident"]:
