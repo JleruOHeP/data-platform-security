@@ -5,6 +5,7 @@ from pathlib import Path
 from evidence import normalize_evidence
 from security_architect import INCIDENT_MODEL, run_incident_layer, find_top_incident_risk
 from security_experts import EXPERTS, infer, analyze_evidence_contribution, find_expert_by_risk_node, find_top_control_for_risk
+from business_outcomes import BUSINESS_MODEL, run_business_layer
 
 
 def run_mixture(evidence, weight_overrides=None):
@@ -39,10 +40,13 @@ def run_mixture(evidence, weight_overrides=None):
     final_risk_probability = sum(max((t["probability"] for t in r["targets"]), default=0.0) * r["weight"] for r in results) / total_weight
     incident_results = run_incident_layer(results, INCIDENT_MODEL)
 
+    business_results = run_business_layer(incident_results, BUSINESS_MODEL)
+
     return {
         "per_expert": results,
         "final_risk_probability": final_risk_probability,
         "incident_results": incident_results,
+        "business_outcome_results": business_results,
     }
 
 
@@ -74,6 +78,10 @@ def main():
     print("\n=== Incident Level Results ===")
     for incident in output["incident_results"]:
         print(f"  {incident['incident']}: {incident['probability']:.4f}")
+
+    print("\n=== Business Outcome Results ===")
+    for outcome in output.get("business_outcome_results", []):
+        print(f"  {outcome['business_outcome']}: {outcome['probability']:.4f}")
 
     result_path = Path(__file__).resolve().parent / "result.json"
     with result_path.open("w", encoding="utf-8") as f:

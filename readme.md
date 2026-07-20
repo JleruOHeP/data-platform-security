@@ -9,6 +9,7 @@ This project runs a multi-expert Bayesian inference engine for data platform sec
 - Performs inference on each expert model to compute risk probabilities.
 - Aggregates expert outputs into a final risk score.
 - Feeds expert risk probabilities into an incident model defined in `incident_model.json`.
+- Feeds incident probabilities into a business-outcome model defined in `business_outcomes.json`.
 - Saves the full output to `result.json` next to `main.py`.
 
 ## How to run
@@ -120,6 +121,9 @@ So the second row means:
 - `incident_model.json`
   - Contains only the final incident CPTs (no duplicated risk nodes). The incident BN builder will add missing prior nodes and set their prior according to expert outputs when available.
 
+- `business_outcomes.json`
+  - Contains the third-level business-outcome CPTs that map incident probabilities to likely business outcomes.
+
 - `experts/`
   - Contains expert model JSON files used for individual expert inference. Each expert may provide multiple `cpt` risk nodes.
 
@@ -133,4 +137,5 @@ Console output summary includes:
 - Compact per-expert line: `risks: RISK1=0.1234, RISK2=0.0500` and `weight`.
 - `Final Risk` scalar (weighted aggregate across experts).
 - `Incident Level Results` listing each incident and its probability.
+- `Business Outcome Results` listing each business outcome and its probability.
 - A suggested control line (if found) that shows the incident probability after re-running inference with that control set to `1`.
